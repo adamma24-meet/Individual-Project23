@@ -1,10 +1,102 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title></title>
+  <title>Memory Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    #number-display {
+      font-size: 48px;
+      text-align: center;
+      margin-top: 50px;
+      display: none;
+    }
+    #user-input {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+    #result {
+      font-size: 24px;
+      text-align: center;
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
 </head>
 <body>
+      <button onclick="startRound()">start playing</button>
+  <div id="number-display">Remember this number:</div>
+  <div id="user-input">
+    <label for="input">Enter the number:</label>
+    <input type="text" id="input" />
+
+    <button onclick="checkInput()">Submit</button>
+  </div>
+
+  <form id="sendScore" action="/" method="post">
+    <input type='hidden' id = "scoreVal" type="text" name="score" val="0">
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function getRandomNumber(digits) {
+      const min = 1;
+      const max = 10 ** digits - 1;
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+
+    let currentDigits = 1;
+    let currentNumber;
+    let timer;
+    let score = 0;
+
+    function startRound() {
+      currentNumber = getRandomNumber(currentDigits);
+      document.getElementById("number-display").textContent = currentNumber;
+      document.getElementById("number-display").style.display = "block";
+
+      setTimeout(function () {
+        document.getElementById("number-display").style.display = "none";
+        document.getElementById("user-input").style.display = "block";
+        document.getElementById("input").focus();
+      }, 3000);
+    }
+
+    function checkInput() {
+      const userInput = parseInt(document.getElementById("input").value);
+      if (userInput === currentNumber) {
+        score++;
+        currentDigits++;
+        document.getElementById("result").textContent = `Correct! Next round will have ${currentDigits} digits.`;
+
+        setTimeout(function () {
+        document.getElementById("result").style.display = "none";
+        startRound();
+      }, 2000);
+
+
+      } else {
+        document.getElementById("result").textContent = `Incorrect! The game is over. You remembered ${currentDigits - 1} digits.`;
+        currentDigits = 1;
+        var form = document.getElementById("sendScore");
+        var input = document.getElementById("scoreVal");
+        input.value = score;
+        form.submit();
+      }
+
+      document.getElementById("input").value = "";
+      document.getElementById("user-input").style.display = "none";
+      document.getElementById("result").style.display = "block";
+
+      
+    }
+
     
+  </script>
 </body>
 </html>
