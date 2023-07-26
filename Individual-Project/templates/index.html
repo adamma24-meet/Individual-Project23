@@ -26,24 +26,7 @@
       display: none;
     }
   </style>
-</head>
-<body>
-      <button onclick="startRound()">start playing</button>
-  <div id="number-display">Remember this number:</div>
-  <div id="user-input">
-    <label for="input">Enter the number:</label>
-    <input type="text" id="input" />
-
-    <button onclick="checkInput()">Submit</button>
-  </div>
-
-  <form id="sendScore" action="/" method="post">
-    <input type='hidden' id = "scoreVal" type="text" name="score" val="0">
-  </form>
-
-  <div id="result"></div>
-
-  <script>
+   <script>
     function getRandomNumber(digits) {
       const min = 1;
       const max = 10 ** digits - 1;
@@ -86,7 +69,7 @@
         var form = document.getElementById("sendScore");
         var input = document.getElementById("scoreVal");
         input.value = score;
-        form.submit();
+        form.submit();  
       }
 
       document.getElementById("input").value = "";
@@ -95,8 +78,26 @@
 
       
     }
-
-    
   </script>
+</head>
+<body>
+      <button onclick="startRound()">start playing</button>
+  <div id="number-display">Remember this number:</div>
+  <div id="user-input">
+    <label for="input">Enter the number:</label>
+    <input type="text" id="input" />
+
+    <button onclick="checkInput()">Submit</button>
+  </div>
+
+  <form id="sendScore" action="/" method="post">
+    <input type='hidden' id = "scoreVal" type="text" name="score" val="0">
+  </form>
+
+  <div id="result"></div>
+
+  <a href="/leaderboard"> Your Last Score </a>
+
+ 
 </body>
 </html>

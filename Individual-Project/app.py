@@ -29,15 +29,14 @@ def signup():
         username = request.form['username']
         try:
             login_session['user'] = auth.create_user_with_email_and_password(email, password)
-            user = {'email':email, 'username':username}
+            user = {'email':email, 'username':username, 'score': 0}
             uid = login_session['user']['localId']
             db.child('users').child(uid).set(user)
             return redirect(url_for('index'))
         except:
            error = "Authentication failed"
 
-    else:
-        return render_template("signup.html")
+    return render_template("signup.html")
 @app.route('/main',methods=['GET','POST'])
 def main():
     return render_template("main.html")
@@ -47,10 +46,13 @@ def signin():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
+        print(email,password)
         try:
             login_session['user'] = auth.sign_in_with_email_and_password(email, password)
+            print(login_session['user'], "heyyYYYYYYYYYYYYYYYYYYYYYY")
             return render_template("index.html")
-        except:
+        except Exception as e:
+            print('ERROR:', e)
             error = "Authentication failed"
             return render_template("signin.html")
     else:
@@ -60,12 +62,25 @@ def signin():
 @app.route('/',  methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
+        score = request.form['score']
+        UID = login_session['user']['localId']
+        print(UID)
+        print(db.child('users').child(UID).get().val())
+        email = db.child('users').child(UID).get().val()['email']
+        username = db.child('users').child(UID).get().val()['username']
+        leaderboardScore = {"email":email, "username":username, 'score':score}
+        db.child('users').child(UID).update(leaderboardScore)
         print(score)
     return render_template('index.html')
 
+@app.route('/leaderboard', methods=["POST", "GET"])
+def leaderboard():
+    UID = login_session['user']['localId']
+    score = db.child('users').child(UID).get().val()['score']
+    return render_template('highscore.html', score = score)
 
 #Code goes above here
-
-
+users = db.child("Users").get().val()
+print(users)
 if __name__ == '__main__':
     app.run(debug=True)
